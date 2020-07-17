@@ -32,6 +32,29 @@ public class MainActivity extends AppCompatActivity
         sharedPreferences = getApplicationContext().getSharedPreferences("com.example.notez", Context.MODE_PRIVATE);
         final ListView listView = findViewById(R.id.listView);
 
+        ImageView delete_all=findViewById(R.id.delete_all);
+        delete_all.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                new AlertDialog.Builder(MainActivity.this)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setMessage("Do you want to delete ALL?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                arrayAdapter.clear();                                        //clears the adapter but not sets it
+                                arrayAdapter.notifyDataSetChanged();                         //all 4 lines necessary so that adapter is also set as empty
+                                HashSet<String> set = new HashSet<>(MainActivity.notes);
+                                sharedPreferences.edit().putStringSet("notes", set).apply();
+                            }
+                        }).setNegativeButton("No",null)
+                        .show();
+            }
+        });
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
